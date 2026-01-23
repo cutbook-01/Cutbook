@@ -35,19 +35,24 @@ app.post("/signup", async (req, res) => {
   const { name, email, phone } = req.body;
   console.log("New signup:", name, email, phone);
 
-  // Try SMS (never crash if it fails)
+   // Try SMS (log success or exact Twilio error)
   try {
-    if (twilioClient && process.env.TWILIO_PHONE_NUMBER) {
-      await twilioClient.messages.create({
+    if (!twilioClient) {
+      console.log("SMS skipped (Twilio client is null).");
+    } else {
+      const msg = await twilioClient.messages.create({
         from: process.env.TWILIO_PHONE_NUMBER,
         to: phone,
         body: "Cutbook ✅ Thanks for joining! We’ll email you with instructions shortly."
       });
-    } else {
-      console.log("SMS skipped (Twilio not ready).");
+      console.log("✅ SMS sent. SID:", msg.sid);
     }
   } catch (err) {
-    console.log("Signup SMS error:", err.message);
+    console.log("❌ Signup SMS error:", err.message);
+    if (err.code) console.log("Twilio error code:", err.code);
+    if (err.moreInfo) console.log("More info:", err.moreInfo);
+  }
+
   }
 
   // Big thank-you page
