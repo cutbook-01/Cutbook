@@ -138,15 +138,23 @@
   </div>
 </section>
 
-<section id="signup">
-  <form action="/signup" method="POST">
- <h2 style="text-align:center;">Join Early Access for Your Business</h2>
+<form action="/signup" method="POST">
+  <h2 style="text-align:center;">Join Early Access for Your Business</h2>
 
-    <input type="text" name="name" placeholder="Your name" required />
-    <input type="email" name="email" placeholder="Your email" required />
-    <button type="submit">Join Waitlist</button>
-  </form>
-</section>
+  <input type="text" name="name" placeholder="Your name" required />
+  <input type="email" name="email" placeholder="Your email" required />
+
+  <!-- NEW: Phone number field -->
+  <input
+    type="tel"
+    name="phone"
+    placeholder="Your phone number (ex: +13125551234)"
+    required
+  />
+
+  <button type="submit">Join</button>
+</form>
+
 
 <footer>
   © 2026 CutBook. All rights reserved.
