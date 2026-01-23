@@ -1,61 +1,56 @@
 const express = require("express");
 const path = require("path");
 
-// Twilio setup (safe)
-let twilioClient = null;
-try {
-  const twilio = require("twilio");
-  const hasTwilio =
-    process.env.TWILIO_ACCOUNT_SID &&
-    process.env.TWILIO_AUTH_TOKEN &&
-    process.env.TWILIO_PHONE_NUMBER;
-
-  if (hasTwilio) {
-    twilioClient = twilio(
-      process.env.TWILIO_ACCOUNT_SID,
-      process.env.TWILIO_AUTH_TOKEN
-    );
-  }
-} catch (e) {
-  // If twilio isn't installed yet, app still runs (no crash)
-  console.log("Twilio not ready:", e.message);
-}
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+// ✅ Safe Twilio init (will NOT crash your app)
+let twilioClient = null;
+try {
+  const twilio = require("twilio");
+
+  const sid = process.env.TWILIO_ACCOUNT_SID;
+  const token = process.env.TWILIO_AUTH_TOKEN;
+  const from = process.env.TWILIO_PHONE_NUMBER;
+
+  if (sid && token && from) {
+    twilioClient = twilio(sid, token);
+  } else {
+    console.log("Twilio config vars missing — SMS disabled.");
+  }
+} catch (e) {
+  console.log("Twilio not installed or failed to load — SMS disabled.", e.message);
+}
+
+// Home
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
+// Signup (sends SMS if Twilio is ready)
 app.post("/signup", async (req, res) => {
   const { name, email, phone } = req.body;
   console.log("New signup:", name, email, phone);
 
-  // Send SMS confirmation
+  // Try SMS (never crash if it fails)
   try {
-    if (!twilioClient) throw new Error("Twilio not configured.");
-
-    await twilioClient.messages.create({
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: phone,
-      body: `Cutbook ✅ Thanks for joining! We’ll email you with instructions shortly.`
-    });
+    if (twilioClient && process.env.TWILIO_PHONE_NUMBER) {
+      await twilioClient.messages.create({
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: phone,
+        body: "Cutbook ✅ Thanks for joining! We’ll email you with instructions shortly."
+      });
+    } else {
+      console.log("SMS skipped (Twilio not ready).");
+    }
   } catch (err) {
-    console.error("Signup SMS error:", err.message);
+    console.log("Signup SMS error:", err.message);
   }
 
-  // Bigger thank-you page
+  // Big thank-you page
   res.send(`
 <!DOCTYPE html>
 <html>
@@ -92,3 +87,5 @@ app.post("/signup", async (req, res) => {
 </html>
 `);
 });
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
