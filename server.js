@@ -1,3 +1,6 @@
+
+
+
 const express = require("express");
 const path = require("path");
 
@@ -7,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-// ✅ Safe Twilio init (will NOT crash your app)
+// Safe Twilio init (won't crash app)
 let twilioClient = null;
 try {
   const twilio = require("twilio");
@@ -18,11 +21,12 @@ try {
 
   if (sid && token && from) {
     twilioClient = twilio(sid, token);
+    console.log("Twilio ready ✅");
   } else {
     console.log("Twilio config vars missing — SMS disabled.");
   }
 } catch (e) {
-  console.log("Twilio not installed or failed to load — SMS disabled.", e.message);
+  console.log("Twilio failed to load — SMS disabled.", e.message);
 }
 
 // Home
@@ -35,7 +39,7 @@ app.post("/signup", async (req, res) => {
   const { name, email, phone } = req.body;
   console.log("New signup:", name, email, phone);
 
-   // Try SMS (log success or exact Twilio error)
+  // Try SMS (log success or exact Twilio error)
   try {
     if (!twilioClient) {
       console.log("SMS skipped (Twilio client is null).");
@@ -51,8 +55,6 @@ app.post("/signup", async (req, res) => {
     console.log("❌ Signup SMS error:", err.message);
     if (err.code) console.log("Twilio error code:", err.code);
     if (err.moreInfo) console.log("More info:", err.moreInfo);
-  }
-
   }
 
   // Big thank-you page
