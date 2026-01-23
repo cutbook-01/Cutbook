@@ -1,15 +1,16 @@
 {
   "name": "cutbook",
   "version": "1.0.0",
-  "description": "Barber landing page SaaS",
+  "description": "Booking + reminders",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
- "dependencies": {
-  "express": "^4.18.2",
-  "twilio": "^4.23.0"
-}
-
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "twilio": "^4.23.0"
   }
 }
