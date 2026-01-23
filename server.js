@@ -11,8 +11,10 @@ app.get("/", (req, res) => {
 });
 
 app.post("/signup", (req, res) => {
-  const { name, email } = req.body;
-  console.log("New barber signup:", name, email);
+const { name, email, phone } = req.body;
+
+ console.log("New signup:", name, email, phone);
+
 res.send(`
 <!DOCTYPE html>
 <html>
