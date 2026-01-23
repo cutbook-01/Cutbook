@@ -1,7 +1,35 @@
 const express = require("express");
 const path = require("path");
+
+// Twilio setup (safe)
+let twilioClient = null;
+try {
+  const twilio = require("twilio");
+  const hasTwilio =
+    process.env.TWILIO_ACCOUNT_SID &&
+    process.env.TWILIO_AUTH_TOKEN &&
+    process.env.TWILIO_PHONE_NUMBER;
+
+  if (hasTwilio) {
+    twilioClient = twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    );
+  }
+} catch (e) {
+  // If twilio isn't installed yet, app still runs (no crash)
+  console.log("Twilio not ready:", e.message);
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
