@@ -1,6 +1,3 @@
-
-
-
 const express = require("express");
 const path = require("path");
 
@@ -96,3 +93,6 @@ app.post("/signup", async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+
