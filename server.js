@@ -42,20 +42,20 @@ app.post("/signup", async (req, res) => {
   const { name, email, phone } = req.body;
   console.log("New signup:", name, email, phone);
 
-  // Send SMS confirmation (if Twilio is configured)
+  // Send SMS confirmation
   try {
     if (!twilioClient) throw new Error("Twilio not configured.");
 
     await twilioClient.messages.create({
       from: process.env.TWILIO_PHONE_NUMBER,
       to: phone,
-      body: `Cutbook ✅ Thanks for joining! We’ll text/email instructions shortly.`
+      body: `Cutbook ✅ Thanks for joining! We’ll email you with instructions shortly.`
     });
   } catch (err) {
     console.error("Signup SMS error:", err.message);
   }
 
-  // Big thank-you page
+  // Bigger thank-you page
   res.send(`
 <!DOCTYPE html>
 <html>
@@ -92,51 +92,3 @@ app.post("/signup", async (req, res) => {
 </html>
 `);
 });
-
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Cutbook - Thank You</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f8f8f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .box {
-      background: white;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-      text-align: center;
-      max-width: 400px;
-    }
-    h1 {
-      color: #ff0055;
-      margin-bottom: 15px;
-    }
-    p {
-      font-size: 1.1rem;
-      color: #444;
-    }
-  </style>
-</head>
-<body>
-  <div class="box">
-    <h1>Thank You for Signing Up!</h1>
-    <p>We will email you with instructions shortly.</p>
-  </div>
-</body>
-</html>
-`);
-
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
