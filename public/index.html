@@ -2,18 +2,139 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CutBook</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      color: #222;
+    }
+
+    header {
+      background: #111;
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      margin-bottom: 15px;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      color: #ddd;
+    }
+
+    .btn {
+      background: #ff0055;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    section {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    .benefits {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    form {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+      max-width: 400px;
+      margin: auto;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: #ff0055;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
 <body>
-  <h1>Get More Barber Clients</h1>
-  <p>Simple booking pages that bring customers to you.</p>
 
+<header>
+  <h1>Get More Barber Clients</h1>
+  <p>Clean booking pages that turn visitors into paying customers.</p>
+  <a href="#signup" class="btn">Join the Waitlist</a>
+</header>
+
+<section>
+  <div class="benefits">
+    <div class="card">
+      <h3>More Bookings</h3>
+      <p>Turn clicks into real appointments.</p>
+    </div>
+    <div class="card">
+      <h3>Look Professional</h3>
+      <p>Clean design that builds trust instantly.</p>
+    </div>
+    <div class="card">
+      <h3>Simple Setup</h3>
+      <p>No tech skills needed.</p>
+    </div>
+  </div>
+</section>
+
+<section id="signup">
   <form action="/signup" method="POST">
+    <h2 style="text-align:center;">Join Early Access</h2>
     <input type="text" name="name" placeholder="Your name" required />
-    <br /><br />
     <input type="email" name="email" placeholder="Your email" required />
-    <br /><br />
     <button type="submit">Join Waitlist</button>
   </form>
+</section>
+
+<footer>
+  © 2026 CutBook. All rights reserved.
+</footer>
+
 </body>
 </html>
