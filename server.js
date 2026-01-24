@@ -8,12 +8,6 @@ const PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-
-  }
-} catch (e) {
-  console.log("Twilio failed to load — SMS disabled.", e.message);
-}
-
 // Email (safe init)
 let emailTransporter = null;
 try {
@@ -38,12 +32,12 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Signup
+// Signup (email-only)
 app.post("/signup", async (req, res) => {
-  const { name, email, phone } = req.body;
+  const { name, email, phone } = req.body; // phone can stay on the form even if we don’t text
   console.log("New signup:", name, email, phone);
 
-  // Email confirmation
+  // Send confirmation email
   try {
     if (emailTransporter) {
       await emailTransporter.sendMail({
@@ -51,7 +45,7 @@ app.post("/signup", async (req, res) => {
         to: email,
         subject: "Welcome to Cutbook!",
         html: `<h2>Thanks for signing up, ${name}!</h2>
-               <p>We’ll email you setup instructions shortly.</p>
+               <p>We’ll email you with instructions shortly.</p>
                <p>– Cutbook</p>`
       });
       console.log("✅ Email sent to", email);
@@ -62,9 +56,7 @@ app.post("/signup", async (req, res) => {
     console.log("❌ Email error:", err.message);
   }
 
-  
-  }
-
+  // Thank-you page
   res.send(`
 <!DOCTYPE html>
 <html>
@@ -80,5 +72,3 @@ app.post("/signup", async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
