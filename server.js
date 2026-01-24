@@ -1,5 +1,14 @@
-const express = require("express");
-const path = require("path");
+const nodemailer = require("nodemailer");
+
+// Email (Gmail App Password)
+const emailTransporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,6 +44,22 @@ app.get("/", (req, res) => {
 app.post("/signup", async (req, res) => {
   const { name, email, phone } = req.body;
   console.log("New signup:", name, email, phone);
+  // Send confirmation email
+  try {
+    await emailTransporter.sendMail({
+      from: `"Cutbook" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Welcome to Cutbook!",
+      html: `
+        <h2>Thanks for signing up, ${name}!</h2>
+        <p>We’ll email you setup instructions shortly.</p>
+        <p>– Cutbook</p>
+      `
+    });
+    console.log("✅ Email sent to", email);
+  } catch (err) {
+    console.log("❌ Email error:", err.message);
+  }
 
   // Try SMS (log success or exact Twilio error)
   try {
