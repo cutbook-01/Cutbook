@@ -8,19 +8,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-// Twilio (safe init)
-let twilioClient = null;
-try {
-  const twilio = require("twilio");
-  const sid = process.env.TWILIO_ACCOUNT_SID;
-  const token = process.env.TWILIO_AUTH_TOKEN;
-  const from = process.env.TWILIO_PHONE_NUMBER;
 
-  if (sid && token && from) {
-    twilioClient = twilio(sid, token);
-    console.log("Twilio ready ✅");
-  } else {
-    console.log("Twilio config vars missing — SMS disabled.");
   }
 } catch (e) {
   console.log("Twilio failed to load — SMS disabled.", e.message);
@@ -74,20 +62,7 @@ app.post("/signup", async (req, res) => {
     console.log("❌ Email error:", err.message);
   }
 
-  // SMS (optional)
-  try {
-    if (twilioClient) {
-      const msg = await twilioClient.messages.create({
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: phone,
-        body: "Cutbook ✅ Thanks for joining! We’ll email you with instructions shortly."
-      });
-      console.log("✅ SMS sent. SID:", msg.sid);
-    } else {
-      console.log("SMS skipped (not ready).");
-    }
-  } catch (err) {
-    console.log("❌ Signup SMS error:", err.message);
+  
   }
 
   res.send(`
